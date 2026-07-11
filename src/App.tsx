@@ -99,7 +99,7 @@ function App() {
         </header>
         <article className="news-article">
           <h1>{item.title}</h1>
-          <p className="news-date">{item.date} · 來源 VOA Learning English</p>
+          <p className="news-date">{item.date} · 來源 VOA News</p>
           {item.body.map((p, i) => <p key={i} className="news-para">{p}</p>)}
           <a className="news-source-link" href={item.url} target="_blank" rel="noreferrer">閱讀完整原文 ↗</a>
         </article>
@@ -112,7 +112,7 @@ function App() {
       <main className="app-shell news-shell">
         <header className="study-header">
           <button className="icon-button" onClick={() => setView('home')} aria-label="返回首頁">←</button>
-          <div className="news-header-title"><span>本週新聞</span><small>VOA Learning English · 每週更新</small></div>
+          <div className="news-header-title"><span>本週新聞</span><small>VOA News · 每週更新</small></div>
         </header>
         <section className="news-list">
           {news.map((n, i) => (

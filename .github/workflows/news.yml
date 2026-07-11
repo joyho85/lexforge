@@ -2,7 +2,7 @@ name: Weekly VOA News Update
 
 on:
   schedule:
-    - cron: '17 3 * * 1'   # 每週一 03:17 UTC 跑（台灣時間約週一 11:17）
+    - cron: '17 3 * * 1'   # 每週一 03:17 UTC（台灣約週一 11:17）
   workflow_dispatch:
 
 permissions:
@@ -21,13 +21,24 @@ jobs:
       - name: Generate news.json
         run: python scripts/gen_news.py
       - name: Commit if changed
+        id: commit
         run: |
           git config user.name "lexforge-bot"
           git config user.email "bot@lexforge.local"
           git add src/news.json
           if git diff --cached --quiet; then
-            echo "no news change"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             git commit -m "chore: weekly VOA news update"
             git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
+      - name: Deploy to Vercel
+        if: steps.commit.outputs.changed == 'true'
+        run: |
+          npm install -g vercel
+          vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+          vercel build --prod --token=$VERCEL_TOKEN
+          vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN --yes
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}

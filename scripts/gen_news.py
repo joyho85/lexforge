@@ -1,23 +1,13 @@
-"""每週抓取 VOA Learning English 文章，產生 public/news.json（只閱讀，不加 TTS）。
+"""每週抓取 VOA News（正式新聞，非 Learning English）最新文章，產生 src/news.json。
+只閱讀，不加 TTS。
 用法： python scripts/gen_news.py
-來源：VOA Learning English 專欄列表頁（穩定 URL，不需會過期的 RSS token）。
+來源：VOA News 主站首頁（穩定 URL，抓最新報導列表 → 各篇正文）。
 """
 import urllib.request, re, json, os, datetime, html as htmlmod
 
 HDR = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
-BASE = 'https://learningenglish.voanews.com'
-
-# 選幾個適合閱讀練習的專欄（程度適中、有正文）
-SECTIONS = [
-    ('Read, Listen & Learn', '/z/952'),
-    ('Health & Lifestyle', '/z/955'),
-    ('Science & Technology', '/z/1579'),
-    ('Words and Their Stories', '/z/987'),
-    ('Education', '/z/959'),
-]
-
+HOME = 'https://www.voanews.com'
 OUT = 'src/news.json'
-PER_SECTION = 2  # 每專欄抓 2 篇 -> 共 ~10 篇，取前 8 篇
 MAX_ITEMS = 8
 
 
@@ -30,47 +20,39 @@ def clean(t: str) -> str:
     return htmlmod.unescape(t).strip()
 
 
-def list_articles(section_url: str):
-    page = get(BASE + section_url)
-    links = re.findall(r'href="(/a/[^"]+\.html)"', page)
+def list_articles():
+    home = get(HOME)
+    links = re.findall(r'href="(/a/[^"]+\.html)"', home)
     seen, out = set(), []
     for l in links:
         if l not in seen:
             seen.add(l)
-            out.append(BASE + l)
+            out.append(HOME + l)
     return out
 
 
 def parse_article(url: str):
     art = get(url)
-    # 標題
-    m = re.search(r'<h1[^>]*class="[^"]*title[^"]*"[^>]*>(.*?)</h1>', art, re.S)
+    m = re.search(r'<h1[^>]*>(.*?)</h1>', art, re.S)
     title = clean(m.group(1)) if m else 'Untitled'
-    # 日期（優先 datePublished meta，否則 pub-date class）
     d = re.search(r'"datePublished"\s*content="([^"]+)"', art)
     if not d:
-        d = re.search(r'class="[^"]*pub-date[^"]*"[^>]*>([^<]+)<', art)
+        d = re.search(r'datetime="([^"]+)"', art)
     date = d.group(1)[:10] if d else datetime.date.today().isoformat()
-    # 正文段落
     ps = re.findall(r'<p>(.*?)</p>', art, re.S)
-    body = [clean(p) for p in ps if len(clean(p)) > 40]
-    body = body[:12]  # 取前 12 段，避免過長
+    body = [clean(p) for p in ps if len(clean(p)) > 40][:14]
     return {'title': title, 'date': date, 'url': url, 'body': body}
 
 
 def main():
     items = []
-    for name, url in SECTIONS:
+    for url in list_articles()[:MAX_ITEMS * 2]:
         try:
-            arts = list_articles(url)[:PER_SECTION]
-            for a in arts:
-                try:
-                    items.append(parse_article(a))
-                except Exception as e:
-                    print('  skip', a, e)
+            items.append(parse_article(url))
         except Exception as e:
-            print('section fail', name, e)
-    # 依日期新到舊排序，取前 MAX_ITEMS
+            print('  skip', url, e)
+        if len(items) >= MAX_ITEMS:
+            break
     items.sort(key=lambda x: x['date'], reverse=True)
     items = items[:MAX_ITEMS]
     os.makedirs('src', exist_ok=True)

@@ -1,0 +1,33 @@
+name: Weekly VOA News Update
+
+on:
+  schedule:
+    - cron: '17 3 * * 1'   # 每週一 03:17 UTC 跑（台灣時間約週一 11:17）
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-news:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Generate news.json
+        run: python scripts/gen_news.py
+      - name: Commit if changed
+        run: |
+          git config user.name "lexforge-bot"
+          git config user.email "bot@lexforge.local"
+          git add src/news.json
+          if git diff --cached --quiet; then
+            echo "no news change"
+          else
+            git commit -m "chore: weekly VOA news update"
+            git push
+          fi

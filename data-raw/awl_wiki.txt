@@ -1,0 +1,33 @@
+{{Short description|Vocabulary for learners of English for higher education}}
+The '''Academic Word List''' ('''AWL''') is a [[word list]] of 570 [[English language|English]] [[Word family|word families]]<ref>{{Cite book |last=Folse |first=Keith S. |url=https://ci.nii.ac.jp/ncid/BA69397266 |title=Vocabulary myths : applying second language research to classroom teaching |date=2004 |publisher=University of Michigan Press |language=ja}}</ref> which appear with great frequency in a broad range of [[Academic publishing|academic texts]]. The target readership is [[English as a second or foreign language]] students intending to enter English-medium [[higher education]], and teachers of such students. The AWL was developed by [[Averil Coxhead]] at the School of Linguistics and Applied Language Studies at [[Victoria University of Wellington]], New Zealand. This list replaced the previously widely used ''[[University Word List]]'', developed by Xue and Nation in 1986. The words included in the AWL were selected based on their range (breadth of academic areas covered), frequency, and dispersion (uniformity of frequency),<ref>{{Cite book |last1=Hedgcock |first1=John S. |url=https://ci.nii.ac.jp/ncid/BB26245081 |title=Teaching readers of English : students, texts, and contexts |last2=Ferris |first2=Dana R. |date=2018 |publisher=Routledge |edition=2nd |language=ja}}</ref> and were divided into ten sublists, each containing 1000 words in decreasing order of frequency. The AWL excludes words from the ''[[General Service List]]'' (the 2000 highest-frequency words in general texts). Many words in the AWL are general vocabulary not restricted to an academic domain, such as the words ''area'', ''approach'', ''create'', ''similar'', and ''occur,'' found in Sublist One, and the AWL only accounts for a small percentage of the actual word occurrences in academic texts.<ref>{{Cite journal |last1=Chen |first1=Qi |last2=Ge |first2=Guang-chun |date=2007-01-01 |title=A corpus-based lexical study on frequency and distribution of Coxhead's AWL word families in medical research articles (RAs) |url=https://www.sciencedirect.com/science/article/pii/S088949060700018X |journal=English for Specific Purposes |volume=26 |issue=4 |pages=502–514 |doi=10.1016/j.esp.2007.04.003 |issn=0889-4906|url-access=subscription }}</ref>    
+
+In the second decade of the twenty-first century, a revised list, called the ''[[New Academic Word List]]'' (NAWL), was developed and made public.<ref>{{cite web | url=https://www.eapfoundation.com/vocab/academic/nawl/ | title=New Academic Word List (NAWL) }}</ref>
+This [[:simple:wikt:Wiktionary:Academic word list|list]] is available on the [[:simple:wikt:Main Page|Simple English Wiktionary]].
+
+The ''[[Academic Vocabulary List]]'', based on the Academic Word List, drawing from the [[Corpus of Contemporary American English]] (COCA), was developed by Gardner and Davies in 2013. Rather than relying on [[Word family|word families]], like the AWL, the AVL is composed of 3000 English [[Lemma (morphology)|lemmas]], and provides a broader coverage of Academic English.<ref>{{Cite journal |last1=Gardner |first1=D. |last2=Davies |first2=M. |date=2013-08-02 |title=A New Academic Vocabulary List |url=https://doi.org/10.1093/applin/amt015 |journal=Applied Linguistics |volume=35 |issue=3 |pages=305–327 |doi=10.1093/applin/amt015 |issn=0142-6001|url-access=subscription }}</ref>
+
+==See also==
+*[[General Service List]]
+
+== References ==
+{{Reflist}}
+
+# Coxhead, A. (2000). A New Academic Word List. TESOL Quarterly, Vol. 34, No. 2 (Summer, 2000), pp. 213-238 https://www.jstor.org/stable/3587951
+# Coxhead, A. (2012). Academic Vocabulary, Writing and English for Academic Purposes: Perspectives from Second Language Learners. ''RELC Journal'', ''43''(1), 137–145. <nowiki>https://doi.org/10.1177/0033688212439323</nowiki> 
+# Green, C. (2019). Enriching the academic wordlist and Secondary Vocabulary Lists with lexicogrammar: Toward a pattern grammar of academic vocabulary. ''System'', ''87'', 102158. <nowiki>https://doi.org/10.1016/j.system.2019.102158</nowiki>
+# Hyland, K., & Tse, P. (June 2007). Is there an "Academic Vocabulary"? TESOL Quarterly, Volume 41, Number 2, pp. 235-253.
+# Hancioglu, N., Neufeld, S., & Eldridge, J. (2008). Through the looking glass and into the land of lexico-grammar. English for Specific Purposes 27/4, 459-479 {{doi|10.1016/j.esp.2008.08.001}}
+
+== External links ==
+*[https://web.archive.org/web/20061107124145/http://www.nottingham.ac.uk/%7Ealzsh3/acvocab/ Academic Vocabulary]
+*[https://web.archive.org/web/20060203024845/http://www.uefap.co.uk/vocab/vocfram.htm Vocabulary in EAP]
+*[https://web.archive.org/web/20061108210734/http://www.er.uqam.ca/nobel/r21270/levels/ Levels tests online]
+
+{{Frequency list}}
+
+[[Category:Lexis (linguistics)]]
+[[Category:Lists of English words]]
+[[Category:Word lists]]
+
+
+{{ling-stub}}

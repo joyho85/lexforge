@@ -36,4 +36,5 @@ export interface NewsItem {
   date: string
   url: string
   body: string[]
+  source: string
 }

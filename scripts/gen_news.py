@@ -1,14 +1,19 @@
-"""每週抓取 VOA News（正式新聞，非 Learning English）最新文章，產生 src/news.json。
+"""每週抓取 BBC World + The Guardian World 最新文章（混搭），產生 src/news.json。
 只閱讀，不加 TTS。
-用法： python scripts/gen_news.py
-來源：VOA News 主站首頁（穩定 URL，抓最新報導列表 → 各篇正文）。
+來源：兩家穩定 RSS（即時更新）→ 各抓最新幾篇 → 抓全文 → 合併取前 N 篇。
 """
 import urllib.request, re, json, os, datetime, html as htmlmod
+import xml.etree.ElementTree as ET
 
-HDR = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
-HOME = 'https://www.voanews.com'
+HDR = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
 OUT = 'src/news.json'
-MAX_ITEMS = 8
+PER_SRC = 6          # 每來源取最新 6 篇
+MAX_ITEMS = 8        # 最終合併取前 8 篇
+
+SOURCES = [
+    ('BBC World', 'https://feeds.bbci.co.uk/news/world/rss.xml', 'bbc'),
+    ('The Guardian', 'https://www.theguardian.com/world/rss', 'guardian'),
+]
 
 
 def get(url: str) -> str:
@@ -20,39 +25,52 @@ def clean(t: str) -> str:
     return htmlmod.unescape(t).strip()
 
 
-def list_articles():
-    home = get(HOME)
-    links = re.findall(r'href="(/a/[^"]+\.html)"', home)
-    seen, out = set(), []
-    for l in links:
-        if l not in seen:
-            seen.add(l)
-            out.append(HOME + l)
+def parse_date(s: str) -> str:
+    for fmt in ('%a, %d %b %Y %H:%M:%S %z', '%a, %d %b %Y %H:%M:%S %Z'):
+        try:
+            return datetime.datetime.strptime(s.strip(), fmt).date().isoformat()
+        except Exception:
+            pass
+    return datetime.date.today().isoformat()
+
+
+def rss_items(url: str):
+    root = ET.fromstring(get(url))
+    out = []
+    for it in root.findall('.//item') + root.findall('.//{http://www.w3.org/2005/Atom}entry'):
+        title = clean(it.findtext('title') or it.findtext('{http://www.w3.org/2005/Atom}title') or '')
+        link = it.findtext('link') or (it.find('{http://www.w3.org/2005/Atom}link') and it.find('{http://www.w3.org/2005/Atom}link').get('href')) or ''
+        pd = it.findtext('pubDate') or it.findtext('{http://www.w3.org/2005/Atom}updated') or ''
+        if link and title:
+            out.append((title, link.split('?')[0], parse_date(pd)))
     return out
 
 
-def parse_article(url: str):
+def parse_body(url: str, src: str):
     art = get(url)
-    m = re.search(r'<h1[^>]*>(.*?)</h1>', art, re.S)
-    title = clean(m.group(1)) if m else 'Untitled'
-    d = re.search(r'"datePublished"\s*content="([^"]+)"', art)
-    if not d:
-        d = re.search(r'datetime="([^"]+)"', art)
-    date = d.group(1)[:10] if d else datetime.date.today().isoformat()
-    ps = re.findall(r'<p>(.*?)</p>', art, re.S)
-    body = [clean(p) for p in ps if len(clean(p)) > 40][:14]
-    return {'title': title, 'date': date, 'url': url, 'body': body}
+    ps = re.findall(r'<p[^>]*>(.*?)</p>', art, re.S)
+    body = [clean(p) for p in ps if len(clean(p)) > 40]
+    if src == 'bbc':
+        # 跳過開頭導航垃圾（BBC Homepage / Skip to content 等）
+        body = [b for b in body if not b.lower().startswith(('bbc homepage', 'skip to', 'your account', 'accessibility'))][:12]
+    else:
+        body = body[:12]
+    return body
 
 
 def main():
     items = []
-    for url in list_articles()[:MAX_ITEMS * 2]:
+    for name, feed, src in SOURCES:
         try:
-            items.append(parse_article(url))
+            for title, link, date in rss_items(feed)[:PER_SRC]:
+                try:
+                    body = parse_body(link, src)
+                    if body:
+                        items.append({'title': title, 'date': date, 'url': link, 'body': body, 'source': name})
+                except Exception as e:
+                    print('  skip', link, e)
         except Exception as e:
-            print('  skip', url, e)
-        if len(items) >= MAX_ITEMS:
-            break
+            print('feed fail', name, e)
     items.sort(key=lambda x: x['date'], reverse=True)
     items = items[:MAX_ITEMS]
     os.makedirs('src', exist_ok=True)
